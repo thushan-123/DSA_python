@@ -56,16 +56,39 @@ def searchNode(rootNode,value):
     else:
         return searchNode(rootNode.rightChild,value)
     
-def deleteNode(rootNode,value):
+# find the right sub tree min value
+def minNode(bstNode):
+    current = bstNode
+    while (current.leftChild is not None):
+        current = current.leftChild
+    return current
+        
+        
+def deleteNode(rootNode, value):
     if rootNode is None:
-        return
+        return None
     if rootNode.data > value:
         rootNode.leftChild = deleteNode(rootNode.leftChild, value)
     elif rootNode.data < value:
         rootNode.rightChild = deleteNode(rootNode.rightChild, value)
     else:
-        
-        
+        # Case: Node with only one child or no child
+        if rootNode.leftChild is None:
+            temp = rootNode.rightChild
+            rootNode = None  # Delete the current node
+            return temp
+        elif rootNode.rightChild is None:
+            temp = rootNode.leftChild
+            rootNode = None  # Delete the current node
+            return temp
+
+        # Case: Node with two children
+        temp = minNode(rootNode.rightChild)
+        rootNode.data = temp.data  # Copy the inorder successor's value to this node
+        rootNode.rightChild = deleteNode(rootNode.rightChild, temp.data)  # Delete the inorder successor
+
+    return rootNode
+   
         
     
     
@@ -89,3 +112,7 @@ print("\n")
 print("PostOrder Traversal :" , end='')
 postOrderTravesl(bst)
 print("\nSearch item in tree :",searchNode(bst,4))
+
+deleteNode(bst,3)
+
+preOrderTraversal(bst)
